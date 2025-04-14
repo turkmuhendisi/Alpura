@@ -33,31 +33,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.alpura.viewmodel.RegisterViewModel
+
 
 @Composable
-fun RegisterScreen(
-    navController: NavController,
-    registerViewModel: RegisterViewModel = RegisterViewModel(),
-) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = LoginViewModel()) {
     CompositionLocalProvider(
         LocalTextSelectionColors provides TextSelectionColors(
             handleColor = Color.Black,
             backgroundColor = Color.LightGray
         )
-    ) { RegisterScreenContent(navController, registerViewModel) }
+    ) { LoginScreenContent(navController, loginViewModel) }
 }
 
 @Composable
-fun RegisterScreenContent(navController: NavController, registerViewModel: RegisterViewModel) {
-    val registerState = registerViewModel.registerState.value
-    LaunchedEffect(registerState.isValid) {
-        if (registerState.isValid) {
-            navController.navigate("login")
+fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewModel) {
+    val loginState = loginViewModel.loginState.value
+
+
+    LaunchedEffect(loginState.isAuthenticated) {
+        if (loginState.isAuthenticated) {
+            navController.navigate("home")
         }
+
     }
 
-    if (registerState.isLoading) {
+    if (loginState.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = "Loading", color = Color.Black)
         }
@@ -65,7 +65,6 @@ fun RegisterScreenContent(navController: NavController, registerViewModel: Regis
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
 
     val textFieldColor = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = Color.Black,
@@ -85,7 +84,7 @@ fun RegisterScreenContent(navController: NavController, registerViewModel: Regis
     ) {
 
         Text(
-            text = "Kayıt Ol",
+            text = "Giriş Yap",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             fontSize = 45.sp
@@ -128,33 +127,14 @@ fun RegisterScreenContent(navController: NavController, registerViewModel: Regis
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Şifre (Tekrar)") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
-            colors = textFieldColor,
-            shape = RoundedCornerShape(25.dp),
-            textStyle = TextStyle(
-                color = Color.Black,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp
-            )
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = registerState.errorMessage, color = Color.Red, fontSize = 14.sp)
+        Text(text = loginState.errorMessage, color = Color.Red, fontSize = 14.sp)
 
         Button(
             onClick = {
-                registerViewModel.register(
+                loginViewModel.authenticate(
                     email = email,
-                    password = password,
-                    confirmPassword = confirmPassword
+                    password = password
                 )
             },
             modifier = Modifier
@@ -163,7 +143,7 @@ fun RegisterScreenContent(navController: NavController, registerViewModel: Regis
             colors = ButtonDefaults.buttonColors(Color.Black),
         ) {
             Text(
-                text = "Kayıt Ol",
+                text = "Giriş Yap",
                 fontWeight = FontWeight.Black,
                 fontSize = 16.sp,
                 color = Color.White
@@ -172,28 +152,5 @@ fun RegisterScreenContent(navController: NavController, registerViewModel: Regis
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(
-            onClick = {
-                navController.navigate("login")
-            },
-            colors = ButtonDefaults.buttonColors(Color.LightGray)
-        ) {
-            Text(
-                text = "Zaten bir hesabım var.",
-                fontWeight = FontWeight.Black,
-                fontSize = 14.sp,
-                color = Color.Black
-            )
-        }
-
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text(
-            text = "Şifremi unuttum",
-            fontWeight = FontWeight.Black,
-            fontSize = 14.sp,
-            color = Color.Black
-        )
     }
 }
