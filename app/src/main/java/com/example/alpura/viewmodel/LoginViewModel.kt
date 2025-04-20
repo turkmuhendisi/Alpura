@@ -1,4 +1,4 @@
-package com.example.alpura.screens
+package com.example.alpura.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alpura.api.LoginRequest
 import com.example.alpura.api.RetrofitClient
+import com.example.alpura.screens.LoginState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
