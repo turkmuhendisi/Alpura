@@ -1,4 +1,4 @@
-package com.example.alpura.screens
+package com.example.alpura.screens.login
 
 data class LoginState(
     val isLoading:Boolean = false,

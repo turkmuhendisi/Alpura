@@ -1,4 +1,4 @@
-package com.example.alpura.screens
+package com.example.alpura.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,32 +33,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.alpura.viewmodel.LoginViewModel
-
+import com.example.alpura.viewmodel.RegisterViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = LoginViewModel()) {
+fun RegisterScreen(
+    navController: NavController,
+    registerViewModel: RegisterViewModel = RegisterViewModel(),
+) {
     CompositionLocalProvider(
         LocalTextSelectionColors provides TextSelectionColors(
             handleColor = Color.Black,
             backgroundColor = Color.LightGray
         )
-    ) { LoginScreenContent(navController, loginViewModel) }
+    ) { RegisterScreenContent(navController, registerViewModel) }
 }
 
 @Composable
-fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewModel) {
-    val loginState = loginViewModel.loginState.value
-
-
-    LaunchedEffect(loginState.isAuthenticated) {
-        if (loginState.isAuthenticated) {
-            navController.navigate("home")
+fun RegisterScreenContent(navController: NavController, registerViewModel: RegisterViewModel) {
+    val registerState = registerViewModel.registerState.value
+    LaunchedEffect(registerState.isValid) {
+        if (registerState.isValid) {
+            navController.navigate("login")
         }
-
     }
 
-    if (loginState.isLoading) {
+    if (registerState.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = "Loading", color = Color.Black)
         }
@@ -66,6 +65,7 @@ fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewMo
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     val textFieldColor = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = Color.Black,
@@ -85,7 +85,7 @@ fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewMo
     ) {
 
         Text(
-            text = "Giriş Yap",
+            text = "Kayıt Ol",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             fontSize = 45.sp
@@ -128,14 +128,33 @@ fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewMo
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Şifre (Tekrar)") },
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth(),
+            colors = textFieldColor,
+            shape = RoundedCornerShape(25.dp),
+            textStyle = TextStyle(
+                color = Color.Black,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            )
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = loginState.errorMessage, color = Color.Red, fontSize = 14.sp)
+        Text(text = registerState.errorMessage, color = Color.Red, fontSize = 14.sp)
 
         Button(
             onClick = {
-                loginViewModel.authenticate(
+                registerViewModel.register(
                     email = email,
-                    password = password
+                    password = password,
+                    confirmPassword = confirmPassword
                 )
             },
             modifier = Modifier
@@ -144,7 +163,7 @@ fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewMo
             colors = ButtonDefaults.buttonColors(Color.Black),
         ) {
             Text(
-                text = "Giriş Yap",
+                text = "Kayıt Ol",
                 fontWeight = FontWeight.Black,
                 fontSize = 16.sp,
                 color = Color.White
@@ -153,5 +172,28 @@ fun LoginScreenContent(navController: NavController, loginViewModel: LoginViewMo
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        Button(
+            onClick = {
+                navController.navigate("login")
+            },
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
+        ) {
+            Text(
+                text = "Zaten bir hesabım var.",
+                fontWeight = FontWeight.Black,
+                fontSize = 14.sp,
+                color = Color.Black
+            )
+        }
+
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            text = "Şifremi unuttum",
+            fontWeight = FontWeight.Black,
+            fontSize = 14.sp,
+            color = Color.Black
+        )
     }
 }

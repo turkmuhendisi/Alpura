@@ -1,4 +1,4 @@
-package com.example.alpura.screens
+package com.example.alpura.screens.register
 
 data class RegisterState(
     val isLoading: Boolean = false,

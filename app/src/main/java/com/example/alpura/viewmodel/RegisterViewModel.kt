@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alpura.api.RegisterRequest
 import com.example.alpura.api.RetrofitClient
-import com.example.alpura.screens.RegisterState
+import com.example.alpura.screens.register.RegisterState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

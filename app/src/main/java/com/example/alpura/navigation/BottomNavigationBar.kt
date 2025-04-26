@@ -16,15 +16,31 @@ import com.example.alpura.R
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    val currentDestination = navController.currentBackStackEntry?.destination?.route
+
     NavigationBar(
         containerColor = Color.White
     ) {
 
         NavigationBarItem(
-            icon = { Icon(painterResource(R.drawable.ic_ranking), contentDescription = "Home", Modifier.height(24.dp)) },
-            label = { Text("Home") },
-            selected = true,
-            onClick = { /* Handle home click */ },
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_ranking),
+                    contentDescription = "Status",
+                    Modifier.height(24.dp)
+                )
+            },
+            label = { Text("Durum") },
+            selected = currentDestination == "home",
+            onClick = {
+                if (currentDestination != "home") {
+                    navController.navigate("home") {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 selectedTextColor = Color.Black,
@@ -34,10 +50,24 @@ fun BottomNavigationBar(navController: NavController) {
             )
         )
         NavigationBarItem(
-            icon = { Icon(painterResource(R.drawable.ic_learning), contentDescription = "Courses", Modifier.height(24.dp)) },
-            label = { Text("Courses") },
-            selected = false,
-            onClick = { /* Handle courses click */ },
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_learning),
+                    contentDescription = "Articles",
+                    Modifier.height(24.dp)
+                )
+            },
+            label = { Text("Yazılar") },
+            selected = currentDestination == "article_list" || currentDestination == "article/{articleId}",
+            onClick = {
+                if (currentDestination != "article_list") {
+                    navController.navigate("article_list") {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 selectedTextColor = Color.Black,
@@ -47,8 +77,14 @@ fun BottomNavigationBar(navController: NavController) {
             )
         )
         NavigationBarItem(
-            icon = { Icon(painterResource(R.drawable.ic_profile), contentDescription = "Profile", Modifier.height(24.dp)) },
-            label = { Text("Profile") },
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_profile),
+                    contentDescription = "Profile",
+                    Modifier.height(24.dp)
+                )
+            },
+            label = { Text("Profil") },
             selected = false,
             onClick = { /* Handle profile click */ },
             colors = NavigationBarItemDefaults.colors(
