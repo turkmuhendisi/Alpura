@@ -11,6 +11,7 @@ data class Article(
     val likeStatus: Int,
     val comments: List<String>,
     val commentStatus: Int,
-    val category: Set<Category>
+    val category: Set<String>,
+    val tests: List<TestQuestion> = emptyList()
 )
 

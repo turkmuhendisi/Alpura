@@ -10,24 +10,23 @@ import com.example.alpura.screens.article.ArticleState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ArticleViewModel() : ViewModel() {
     private var _articleState: MutableState<ArticleState> = mutableStateOf(ArticleState())
     val articleState: State<ArticleState> = _articleState
 
     fun getAllArticles() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+
                 try {
                     _articleState.value =
                         _articleState.value.copy(isLoading = true, errorMessage = "")
 
-                    val responseDeffered = async {
+                    val responseDeferred = async {
                         RetrofitClient.apiService.getAllArticles()
                     }
 
-                    val articles = responseDeffered.await()
+                    val articles = responseDeferred.await()
 
                     _articleState.value = _articleState.value.copy(
                         isLoading = false,
@@ -39,7 +38,7 @@ class ArticleViewModel() : ViewModel() {
                         errorMessage = e.message ?: "Bir hata oluştu!"
                     )
                 }
-            }
+
         }
     }
 }

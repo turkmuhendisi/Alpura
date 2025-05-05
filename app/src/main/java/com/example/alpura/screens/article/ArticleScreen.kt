@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ChatBubble
 import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,19 +36,18 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArticleScreen(article: Article, onBackClick: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(article.title) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
+fun ArticleScreen(
+    article: Article,
+    onBackClick: () -> Unit,
+    onTestClick: () -> Unit
+) {
+    Scaffold(topBar = {
+        TopAppBar(title = { Text(article.title) }, navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+            }
+        })
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -94,6 +94,17 @@ fun ArticleScreen(article: Article, onBackClick: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text("${article.comments.size}")
+            }
+
+            if (article.tests.isNotEmpty()) {
+                Button(
+                    onClick = { onTestClick() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                ) {
+                    Text(text = "Kendini Dene")
+                }
             }
         }
     }

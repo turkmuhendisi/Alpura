@@ -30,7 +30,7 @@ fun ArticleListScreen(
             val filteredArticles = if (selectedCategory == "Tümü") {
                 articles
             } else {
-                articles.filter { article -> article.category.any { it.name == selectedCategory } }
+                articles.filter { article -> article.category.any { it.equals(selectedCategory) } }
             }
 
             items(filteredArticles, key = { it.id }) { article ->
