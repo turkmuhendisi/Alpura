@@ -1,6 +1,5 @@
 package com.example.alpura.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -10,17 +9,36 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = BlueLight,
+    onPrimary = Color.White,
+    secondary = BlueGray,
+    onSecondary = Color.White,
+    tertiary = Blue,
+    onTertiary = Color.White,
+    background = Color.White,
+    onBackground = Color.White,
+    surface = Color.White,
+    onSurface = Color.White,
+    surfaceVariant = Gray90,
+    onSurfaceVariant = BlueGray
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Blue,
+    onPrimary = Color.White,
+    secondary = BlueLight,
+    onSecondary = Color.White,
+    tertiary = BlueGray,
+    onTertiary = Color.White,
+    background = Color.White,
+    onBackground = BlueDark,
+    surface = Color.White,
+    onSurface = BlueDark,
+    surfaceVariant = BlueGray,
+    onSurfaceVariant = Blue
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -37,7 +55,7 @@ private val LightColorScheme = lightColorScheme(
 fun AlpuraTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

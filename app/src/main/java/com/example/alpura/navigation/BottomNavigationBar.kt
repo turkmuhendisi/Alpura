@@ -13,6 +13,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.alpura.R
+import com.example.alpura.ui.theme.Blue
+import com.example.alpura.ui.theme.NavyBlue
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -43,10 +45,10 @@ fun BottomNavigationBar(navController: NavController) {
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                selectedTextColor = Color.Black,
+                selectedTextColor = Blue,
                 unselectedIconColor = Color.Gray,
                 unselectedTextColor = Color.Gray,
-                indicatorColor = Color.Black
+                indicatorColor = Blue
             )
         )
         NavigationBarItem(
@@ -70,10 +72,10 @@ fun BottomNavigationBar(navController: NavController) {
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                selectedTextColor = Color.Black,
+                selectedTextColor = Blue,
                 unselectedIconColor = Color.Gray,
                 unselectedTextColor = Color.Gray,
-                indicatorColor = Color.Black
+                indicatorColor = Blue
             )
         )
         NavigationBarItem(
@@ -89,10 +91,10 @@ fun BottomNavigationBar(navController: NavController) {
             onClick = { /* Handle profile click */ },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                selectedTextColor = Color.Black,
+                selectedTextColor = Blue,
                 unselectedIconColor = Color.Gray,
                 unselectedTextColor = Color.Gray,
-                indicatorColor = Color.Black
+                indicatorColor = Blue
             )
         )
     }

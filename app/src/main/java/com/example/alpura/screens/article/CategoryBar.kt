@@ -13,10 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.alpura.ui.theme.Blue
+import com.example.alpura.ui.theme.BlueLight
+import com.example.alpura.ui.theme.NavyBlue
 
 @Composable
 fun CategoryBar(categories: List<String>, selected: String, onSelect: (String) -> Unit) {
-    Text(modifier = Modifier.padding(8.dp), text = "Kategoriler", fontWeight = FontWeight.ExtraBold, fontSize = 32.sp)
+    Text(modifier = Modifier.padding(8.dp), text = "Kategoriler", fontWeight = FontWeight.ExtraBold, fontSize = 32.sp, color = Blue)
     LazyRow(modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)) {
@@ -24,11 +27,11 @@ fun CategoryBar(categories: List<String>, selected: String, onSelect: (String) -
             Button(
                 onClick = { onSelect(category) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selected == category) Color.Black else Color.LightGray.copy(alpha = 0.5f)
+                    containerColor = if (selected == category) Blue else BlueLight.copy(alpha = 0.15f)
                 ),
                 modifier = Modifier.padding(end = 8.dp),
             ) {
-                Text(category, color = if (selected == category) Color.White else Color.Black)
+                Text(category, color = if (selected == category) Color.White else NavyBlue)
             }
         }
     }

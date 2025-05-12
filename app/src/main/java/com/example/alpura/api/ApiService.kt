@@ -8,25 +8,40 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface ApiService {
+interface UserApiService {
     @POST("user/register")
     suspend fun registerUser(@Body request: RegisterRequest): Response<Unit>
 
     @POST("user/login")
     suspend fun loginUser(@Body request: LoginRequest): Response<Unit>
-
-    @GET("api/v1/article/get-all-articles")
-    suspend fun getAllArticles(): List<Article>
 }
 
-object RetrofitClient {
-    private const val BASE_URL = "http://192.168.33.207:8080/"
+object RetrofitClientUser{
+    private const val BASE_URL = "http://188.132.197.153:8082/"
 
-    val apiService: ApiService by lazy {
+    val apiService: UserApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+            .create(UserApiService::class.java)
     }
+}
+
+
+interface ArticleApiService {
+
+    @GET("api/v1/article/get-all-articles")
+    suspend fun getAllArticles(): List<Article>
+}
+object RetrofitClientArticle {
+    private const val BASE_URL = "http://192.168.247.207:8081/"
+
+    val apiService: ArticleApiService
+        =Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ArticleApiService::class.java)
+
 }

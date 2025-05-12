@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alpura.api.LoginRequest
-import com.example.alpura.api.RetrofitClient
+import com.example.alpura.api.RetrofitClientUser
 import com.example.alpura.screens.login.LoginState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -44,7 +44,7 @@ class LoginViewModel() : ViewModel() {
                     )
                     val request = LoginRequest(email, password)
                     val responseDeferred = async {
-                        RetrofitClient.apiService.loginUser(request)
+                        RetrofitClientUser.apiService.loginUser(request)
                     }
                     val response = responseDeferred.await()
 

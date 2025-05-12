@@ -1,6 +1,5 @@
 package com.example.alpura.navigation
 
-import HomeScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -17,6 +16,7 @@ import com.example.alpura.screens.article.ArticleListScreen
 import com.example.alpura.screens.article.ArticleScreen
 import com.example.alpura.screens.article.TestResultScreen
 import com.example.alpura.screens.article.TestScreen
+import com.example.alpura.screens.home.HomeScreen
 import com.example.alpura.screens.login.LoginScreen
 import com.example.alpura.screens.register.RegisterScreen
 import com.example.alpura.viewmodel.ArticleViewModel
@@ -26,13 +26,19 @@ import com.example.alpura.viewmodel.RegisterViewModel
 fun AppNavHost(navController: NavHostController) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
-    val showBottomBar = currentRoute != Screen.Login.route && currentRoute != Screen.Register.route
+    val showBottomBar = currentRoute?.startsWith("article/")?.not() == true &&
+            currentRoute != Screen.Login.route &&
+            currentRoute != Screen.Register.route &&
+            currentRoute != Screen.TestScreen.route &&
+            currentRoute != Screen.TestResultScreen.route
 
-    Scaffold(bottomBar = {
-        if (showBottomBar) {
-            BottomNavigationBar(navController = navController)
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                BottomNavigationBar(navController = navController)
+            }
         }
-    }) { innerPadding ->
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Screen.ArticleList.route,
@@ -128,12 +134,16 @@ fun AppNavHost(navController: NavHostController) {
                 arguments = listOf(
                     navArgument("score") { type = NavType.IntType },
                     navArgument("total") { type = NavType.IntType }
-                )
+                ),
             ) { backStackEntry ->
                 val correctAnswers = backStackEntry.arguments?.getInt("score") ?: 0
                 val totalQuestions = backStackEntry.arguments?.getInt("total") ?: 0
 
-                TestResultScreen(correctAnswers = correctAnswers, totalQuestions = totalQuestions)
+                TestResultScreen(
+                    correctAnswers = correctAnswers,
+                    totalQuestions = totalQuestions,
+                    navController = navController
+                )
             }
         }
     }
