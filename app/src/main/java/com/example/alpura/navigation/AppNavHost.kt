@@ -41,7 +41,7 @@ fun AppNavHost(navController: NavHostController) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.ArticleList.route,
+            startDestination = Screen.Register.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) { HomeScreen(navController) }
@@ -80,9 +80,6 @@ fun AppNavHost(navController: NavHostController) {
 
                 article?.let {
 
-                    println("Tests size: ${article.tests.size}")
-                    println("🧪 Testlerin içeriği: ${article.tests}")
-
                     ArticleScreen(
                         article = it,
                         onBackClick = { navController.popBackStack() },
@@ -113,7 +110,7 @@ fun AppNavHost(navController: NavHostController) {
 
                 val article = viewModel.articleState.value.articles.find { it.id == articleId }
 
-                article?.tests?.let { tests ->
+                /*article?.tests?.let { tests ->
                     TestScreen(
                         testQuestions = tests,
                         onTestFinished = { correctAnswers ->
@@ -126,7 +123,7 @@ fun AppNavHost(navController: NavHostController) {
                         },
                         navController = navController
                     )
-                }
+                }*/
             }
 
             composable(

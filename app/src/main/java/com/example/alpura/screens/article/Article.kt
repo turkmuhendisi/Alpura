@@ -8,10 +8,8 @@ data class Article(
     val author: String,
     val created_at: String,
     val updated_at: String,
-    val likeStatus: Int,
-    val comments: List<String>,
-    val commentStatus: Int,
-    val category: Set<String>,
-    val tests: List<TestQuestion> = emptyList()
+    val likedUsers: Int,
+    val category: Set<String>
 )
+
 

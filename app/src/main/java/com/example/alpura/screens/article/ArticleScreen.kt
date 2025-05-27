@@ -1,5 +1,7 @@
 package com.example.alpura.screens.article
 
+import android.text.method.LinkMovementMethod
+import android.widget.TextView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,11 +39,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import com.example.alpura.ui.theme.Blue
 import com.example.alpura.ui.theme.BlueDark
 import com.example.alpura.ui.theme.BlueLight
 import com.example.alpura.ui.theme.BlueGray
+import io.noties.markwon.Markwon
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -143,11 +148,11 @@ fun ArticleScreen(
                             tint = Blue
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(
+                        /*Text(
                             "${article.likeStatus}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = BlueDark
-                        )
+                        )*/
 
                         Spacer(modifier = Modifier.width(20.dp))
 
@@ -158,11 +163,11 @@ fun ArticleScreen(
                             tint = BlueGray
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(
+                        /*Text(
                             "${article.comments.size}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = BlueDark
-                        )
+                        )*/
                     }
                 }
 
@@ -170,16 +175,11 @@ fun ArticleScreen(
                 Divider(color = BlueGray, thickness = 1.dp)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = article.content, 
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = BlueDark,
-                    lineHeight = 24.sp
-                )
+                MarkdownView(article.content)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (article.tests.isNotEmpty()) {
+                /*if (article.tests.isNotEmpty()) {
                     Button(
                         onClick = { onTestClick() },
                         modifier = Modifier
@@ -197,8 +197,25 @@ fun ArticleScreen(
                             modifier = Modifier.padding(vertical = 4.dp)
                         )
                     }
-                }
+                }*/
             }
         }
     }
+}
+
+@Composable
+fun MarkdownView(content: String) {
+    AndroidView(factory = { context ->
+        TextView(context).apply {
+            val markwon = Markwon.create(context)
+            markwon.setMarkdown(this, content)
+            textSize = 16f
+            setLineSpacing(1.4f, 1.4f)
+            setPadding(0, 0, 0, 0)
+            setTextIsSelectable(true)
+            linksClickable = true
+            movementMethod = LinkMovementMethod.getInstance()
+            setTextColor(android.graphics.Color.parseColor("#1A237E")) // BlueDark
+        }
+    })
 }

@@ -81,4 +81,12 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.compose.material3:material3:1.1.2")
+
+    val markwon_version = "4.6.2"
+
+    implementation ("io.noties.markwon:core:$markwon_version")
 }

@@ -17,16 +17,10 @@ class ArticleViewModel() : ViewModel() {
 
     fun getAllArticles() {
         viewModelScope.launch(Dispatchers.IO) {
-
             try {
-                _articleState.value =
-                    _articleState.value.copy(isLoading = true, errorMessage = "")
+                _articleState.value = _articleState.value.copy(isLoading = true, errorMessage = "")
 
-                val responseDeferred = async {
-                    RetrofitClientArticle.apiService.getAllArticles()
-                }
-
-                val articles = responseDeferred.await()
+                val articles = RetrofitClientArticle.apiService.getAllArticles()
 
                 _articleState.value = _articleState.value.copy(
                     isLoading = false,
@@ -38,7 +32,6 @@ class ArticleViewModel() : ViewModel() {
                     errorMessage = e.message ?: "Bir hata oluştu!"
                 )
             }
-
         }
     }
 }

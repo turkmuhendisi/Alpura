@@ -48,10 +48,10 @@ fun ArticleListScreen(
                     title = article.title,
                     author = article.author,
                     createdAt = article.created_at,
-                    likeStatus = article.likeStatus,
-                    commentStatus = article.comments.size,
+                    likeStatus = article.likedUsers,
                     onClick = { onArticleClick(article.id) }
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
