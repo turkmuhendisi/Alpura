@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.alpura.api.RetrofitClientArticle
 import com.example.alpura.screens.article.ArticleState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ArticleViewModel() : ViewModel() {

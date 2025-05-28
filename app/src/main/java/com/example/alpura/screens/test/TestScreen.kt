@@ -1,4 +1,4 @@
-package com.example.alpura.screens.article
+package com.example.alpura.screens.test
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement

@@ -1,10 +1,15 @@
 package com.example.alpura.navigation
 
+import EducationViewModel
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,13 +19,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.alpura.screens.article.ArticleListScreen
 import com.example.alpura.screens.article.ArticleScreen
-import com.example.alpura.screens.article.TestResultScreen
-import com.example.alpura.screens.article.TestScreen
+import com.example.alpura.screens.education.EducationDetailScreen
+import com.example.alpura.screens.education.EducationListScreen
+import com.example.alpura.screens.test.TestResultScreen
 import com.example.alpura.screens.home.HomeScreen
 import com.example.alpura.screens.login.LoginScreen
 import com.example.alpura.screens.register.RegisterScreen
+import com.example.alpura.screens.test.TestScreen
+import com.example.alpura.util.SessionManager
 import com.example.alpura.viewmodel.ArticleViewModel
+import com.example.alpura.viewmodel.CommentViewModel
 import com.example.alpura.viewmodel.RegisterViewModel
+import com.example.alpura.viewmodel.TestViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -41,7 +51,7 @@ fun AppNavHost(navController: NavHostController) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Register.route,
+            startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) { HomeScreen(navController) }
@@ -69,28 +79,59 @@ fun AppNavHost(navController: NavHostController) {
             }
 
             composable("article/{articleId}") { backStackEntry ->
-                val viewModel: ArticleViewModel = viewModel()
 
-                val articleId = backStackEntry.arguments?.getString("articleId")
-                val article = viewModel.articleState.value.articles.find { it.id == articleId }
+                // Argüman ve ViewModel'lar
+                val articleId = backStackEntry.arguments?.getString("articleId") ?: return@composable
+                val articleViewModel: ArticleViewModel = viewModel()
+                val testViewModel: TestViewModel = viewModel()
+                val navBackStackEntry = remember(backStackEntry) { backStackEntry }
+                val commentViewModel: CommentViewModel = viewModel(navBackStackEntry)
 
-                LaunchedEffect(Unit) {
-                    viewModel.getAllArticles()
+                // Context ve oturumdan kullanıcı adı alma
+                val context = LocalContext.current
+                val sessionManager = remember { SessionManager(context) }
+                val currentUsername = remember { sessionManager.getUsername() ?: "Ziyaretçi" }
+
+                // Mevcut makale
+                val article = articleViewModel.articleState.value.articles.find { it.id == articleId }
+
+                // Yorum metni durumu
+                val commentText = remember { mutableStateOf("") }
+
+                // Sayfa yüklendiğinde veri getir
+                LaunchedEffect(articleId) {
+                    articleViewModel.getAllArticles()
+                    testViewModel.loadTests(articleId)
+                    commentViewModel.loadComments(articleId.toLong())
                 }
 
-                article?.let {
+                // Test olup olmadığını kontrol et
+                val testAvailable = testViewModel.testQuestions.isNotEmpty()
 
+                // Ekran gösterimi
+                article?.let {
                     ArticleScreen(
                         article = it,
+                        comments = commentViewModel.comments,
+                        commentText = commentText.value,
+                        onCommentTextChange = { commentText.value = it },
+                        onSendCommentClick = {
+                            commentViewModel.postComment(
+                                articleId = it.id.toLong(),
+                                username = currentUsername, // Oturumdan gelen kullanıcı adı
+                                commentBody = commentText.value
+                            ) {
+                                commentText.value = ""
+                            }
+                        },
+                        testAvailable = testAvailable,
                         onBackClick = { navController.popBackStack() },
                         onTestClick = {
                             navController.navigate(
-                                Screen.TestScreen.route.replace(
-                                    "{articleId}",
-                                    article.id
-                                )
+                                Screen.TestScreen.route.replace("{articleId}", it.id)
                             )
-                        })
+                        }
+                    )
                 }
             }
 
@@ -100,31 +141,39 @@ fun AppNavHost(navController: NavHostController) {
                     navArgument("articleId") { type = NavType.StringType }
                 )
             ) { backStackEntry ->
-                val viewModel: ArticleViewModel = viewModel()
 
-                val articleId = backStackEntry.arguments?.getString("articleId")
+                val articleId = backStackEntry.arguments?.getString("articleId") ?: ""
+                val viewModel: TestViewModel = viewModel()
 
-                LaunchedEffect(Unit) {
-                    viewModel.getAllArticles()
+                LaunchedEffect(articleId) {
+                    viewModel.loadTests(articleId)
                 }
 
-                val article = viewModel.articleState.value.articles.find { it.id == articleId }
-
-                /*article?.tests?.let { tests ->
-                    TestScreen(
-                        testQuestions = tests,
-                        onTestFinished = { correctAnswers ->
-                            navController.navigate(
-                                Screen.TestResultScreen.routeWithArgs(
-                                    correctAnswers,
-                                    tests.size
+                when {
+                    viewModel.isLoading -> {
+                        // loading indicator
+                        androidx.compose.material3.CircularProgressIndicator()
+                    }
+                    viewModel.errorMessage != null -> {
+                        Text("Hata: ${viewModel.errorMessage}")
+                    }
+                    viewModel.testQuestions.isNotEmpty() -> {
+                        TestScreen(
+                            testQuestions = viewModel.testQuestions,
+                            onTestFinished = { correctAnswers ->
+                                navController.navigate(
+                                    Screen.TestResultScreen.routeWithArgs(
+                                        correctAnswers,
+                                        viewModel.testQuestions.size
+                                    )
                                 )
-                            )
-                        },
-                        navController = navController
-                    )
-                }*/
+                            },
+                            navController = navController
+                        )
+                    }
+                }
             }
+
 
             composable(
                 route = Screen.TestResultScreen.route,
@@ -142,6 +191,44 @@ fun AppNavHost(navController: NavHostController) {
                     navController = navController
                 )
             }
+
+            composable(Screen.EducationList.route) {
+                val viewModel: EducationViewModel = viewModel()
+                val context = LocalContext.current
+
+                LaunchedEffect(Unit) {
+                    viewModel.loadAllVideos()
+                }
+
+                EducationListScreen(
+                    videos = viewModel.videos,
+                    isLoading = viewModel.isLoading,
+                    onVideoClick = { videoId ->
+                        navController.navigate(Screen.EducationDetail.routeWithArgs(videoId))
+                    },
+                    navController = navController,
+                    onFetchVideos = { viewModel.loadAllVideos() }
+                )
+            }
+
+            composable("education_detail/{videoId}") { backStackEntry ->
+                val videoId = backStackEntry.arguments?.getString("videoId")?.toLongOrNull() ?: return@composable
+                val viewModel: EducationViewModel = viewModel()
+
+                val selectedVideo = viewModel.selectedVideo
+
+                LaunchedEffect(videoId) {
+                    viewModel.loadVideoById(videoId)
+                }
+
+                selectedVideo?.let {
+                    EducationDetailScreen(
+                        videoModule = it,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+            }
+
         }
     }
 }

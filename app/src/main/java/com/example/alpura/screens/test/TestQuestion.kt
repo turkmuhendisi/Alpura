@@ -1,4 +1,4 @@
-package com.example.alpura.screens.article
+package com.example.alpura.screens.test
 
 data class TestQuestion(
     val question: String,

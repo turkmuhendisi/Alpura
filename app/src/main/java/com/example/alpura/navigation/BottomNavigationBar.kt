@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.alpura.R
 import com.example.alpura.ui.theme.Blue
-import com.example.alpura.ui.theme.NavyBlue
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -54,7 +53,7 @@ fun BottomNavigationBar(navController: NavController) {
         NavigationBarItem(
             icon = {
                 Icon(
-                    painterResource(R.drawable.ic_learning),
+                    painterResource(R.drawable.ic_article),
                     contentDescription = "Articles",
                     Modifier.height(24.dp)
                 )
@@ -81,14 +80,22 @@ fun BottomNavigationBar(navController: NavController) {
         NavigationBarItem(
             icon = {
                 Icon(
-                    painterResource(R.drawable.ic_profile),
-                    contentDescription = "Profile",
+                    painterResource(R.drawable.ic_learning),
+                    contentDescription = "Eğitim",
                     Modifier.height(24.dp)
                 )
             },
-            label = { Text("Profil") },
-            selected = false,
-            onClick = { /* Handle profile click */ },
+            label = { Text("Eğitim") },
+            selected = currentDestination == "education" || currentDestination == "education/{videoId}",
+            onClick = {
+                if (currentDestination != "education") {
+                    navController.navigate("education") {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 selectedTextColor = Blue,

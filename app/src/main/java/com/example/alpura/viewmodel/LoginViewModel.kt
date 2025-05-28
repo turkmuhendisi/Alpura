@@ -5,9 +5,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.alpura.App
 import com.example.alpura.api.LoginRequest
+import com.example.alpura.api.RetrofitClientAuth
 import com.example.alpura.api.RetrofitClientUser
 import com.example.alpura.screens.login.LoginState
+import com.example.alpura.util.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -44,16 +47,20 @@ class LoginViewModel() : ViewModel() {
                     )
                     val request = LoginRequest(email, password)
                     val responseDeferred = async {
-                        RetrofitClientUser.apiService.loginUser(request)
+                        RetrofitClientAuth.apiService.loginUser(request)
                     }
                     val response = responseDeferred.await()
 
                     if (response.isSuccessful) {
+                        val userResponse = RetrofitClientUser.apiService.getUserByEmail(email)
+                        SessionManager(App.context).saveUsername(userResponse.username)
+
                         _loginState.value = _loginState.value.copy(
                             isAuthenticated = true,
                             isLoading = false
                         )
-                    } else {
+                    }
+                    else {
                         _loginState.value = _loginState.value.copy(
                             errorMessage = "yanlış bilgiler",
                             isLoading = false

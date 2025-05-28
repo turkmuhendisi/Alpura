@@ -89,4 +89,9 @@ dependencies {
     val markwon_version = "4.6.2"
 
     implementation ("io.noties.markwon:core:$markwon_version")
+
+    // player
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
+
 }

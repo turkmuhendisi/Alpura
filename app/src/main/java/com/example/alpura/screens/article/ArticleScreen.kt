@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ChatBubble
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -26,6 +27,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import com.example.alpura.screens.comment.CommentResponseDto
 import com.example.alpura.ui.theme.Blue
 import com.example.alpura.ui.theme.BlueDark
 import com.example.alpura.ui.theme.BlueLight
@@ -52,6 +56,11 @@ import io.noties.markwon.Markwon
 @Composable
 fun ArticleScreen(
     article: Article,
+    comments: List<CommentResponseDto>,
+    commentText: String,
+    onCommentTextChange: (String) -> Unit,
+    onSendCommentClick: () -> Unit,
+    testAvailable: Boolean,
     onBackClick: () -> Unit,
     onTestClick: () -> Unit
 ) {
@@ -179,7 +188,7 @@ fun ArticleScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                /*if (article.tests.isNotEmpty()) {
+                if (testAvailable) {
                     Button(
                         onClick = { onTestClick() },
                         modifier = Modifier
@@ -192,12 +201,99 @@ fun ArticleScreen(
                         )
                     ) {
                         Text(
-                            text = "Kendini Dene", 
+                            text = "Kendini Dene",
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(vertical = 4.dp)
                         )
                     }
-                }*/
+                }
+
+                Text(
+                    text = "Yorumlar",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = BlueDark
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                if (comments.isEmpty()) {
+                    Text(
+                        text = "Henüz yorum yapılmamış.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = BlueGray
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                } else {
+                    comments.forEach {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F6F9)),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Text(
+                                    text = it.username,
+                                    fontWeight = FontWeight.Bold,
+                                    color = BlueDark,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = it.body,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Blue
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = it.createdAt,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = BlueGray
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                OutlinedTextField(
+                    value = commentText,
+                    onValueChange = onCommentTextChange,
+                    label = { Text("Yorumunuzu yazın") },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    singleLine = false,
+                    maxLines = 5,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = BlueDark,
+                        unfocusedTextColor = BlueGray,
+                        cursorColor = BlueDark,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Button(
+                    onClick = onSendCommentClick,
+                    enabled = commentText.isNotBlank(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Blue,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Gönder", style = MaterialTheme.typography.titleMedium)
+                }
+
             }
         }
     }

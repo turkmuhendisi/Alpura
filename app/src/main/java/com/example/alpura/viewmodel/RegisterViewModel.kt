@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alpura.api.RegisterRequest
-import com.example.alpura.api.RetrofitClientUser
+import com.example.alpura.api.RetrofitClientAuth
 import com.example.alpura.screens.register.RegisterState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -51,7 +51,7 @@ class RegisterViewModel : ViewModel() {
 
                     val request = RegisterRequest(email, password)
                     val responseDeffered = async {
-                        RetrofitClientUser.apiService.registerUser(request)
+                        RetrofitClientAuth.apiService.registerUser(request)
                     }
                     val response = responseDeffered.await()
 
